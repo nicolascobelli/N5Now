@@ -4,11 +4,13 @@ using Microsoft.Extensions.DependencyInjection;
 using MediatR;
 using Serilog;
 using UserPermissions.Application.Commands.RequestPermission;
-using Swashbuckle.AspNetCore.Swagger;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using UserPermissions.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using Nest;
+using Confluent.Kafka;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,14 +26,31 @@ builder.Host.UseSerilog();
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "UserPermissions.API", Version = "v1" });
+});
 
 // Add MediatR
-builder.Services.AddMediatR(typeof(RequestPermissionCommand).Assembly);
+builder.Services.AddMediatR(typeof(Program).Assembly);
 
 // Configure database context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Configure Elasticsearch
+var settings = new ConnectionSettings(new Uri(builder.Configuration["ElasticSearch:Url"]))
+    .DefaultIndex("userpermissions");
+var client = new ElasticClient(settings);
+builder.Services.AddSingleton<IElasticClient>(client);
+
+// Configure Kafka
+var producerConfig = new ProducerConfig
+{
+    BootstrapServers = builder.Configuration["Kafka:BootstrapServers"]
+};
+builder.Services.AddSingleton(producerConfig);
+builder.Services.AddSingleton<IProducer<string, string>>(sp => new ProducerBuilder<string, string>(producerConfig).Build());
 
 var app = builder.Build();
 

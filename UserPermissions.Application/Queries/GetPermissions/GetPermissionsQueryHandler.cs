@@ -19,7 +19,7 @@ namespace UserPermissions.Application.Queries.GetPermissions
         {
             _permissionsReadRepository = permissionsReadRepository;
             _producer = producer;
-            _kafkaTopic = configuration["Kafka:Topic"];
+            _kafkaTopic = configuration["Kafka:TopicName"];
         }
 
         public async Task<List<PermissionDto>> Handle(GetPermissionsQuery request, CancellationToken cancellationToken)

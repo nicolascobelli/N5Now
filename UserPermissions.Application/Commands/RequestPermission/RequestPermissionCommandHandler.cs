@@ -47,7 +47,7 @@ namespace UserPermissions.Application.Commands.RequestPermission
             await _unitOfWork.CompleteAsync(cancellationToken);
 
             // Produce Kafka message
-            var topic = _configuration["Kafka:Topic"];
+            var topic = _configuration["Kafka:TopicName"];
             var message = new Message<string, string> { Key = Guid.NewGuid().ToString(), Value = "Permission requested" };
             await _producer.ProduceAsync(topic, message, cancellationToken);
 
