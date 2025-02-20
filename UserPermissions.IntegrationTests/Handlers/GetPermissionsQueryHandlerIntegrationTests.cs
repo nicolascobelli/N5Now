@@ -80,7 +80,7 @@ namespace UserPermissions.IntegrationTests.Handlers
                 EndDate = p1.EndDate
             };
 
-            Assert.Equal(1, result.Count());
+            Assert.Single(result);
             Assert.Equal(expected.Id, result.First().Id);
         }
 
