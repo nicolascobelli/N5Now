@@ -1,5 +1,5 @@
 # Use the official .NET SDK image to build the application
-FROM mcr.microsoft.com/dotnet/sdk:8.0-preview AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 
 # Copy the csproj and restore as distinct layers
@@ -16,7 +16,7 @@ WORKDIR /app/UserPermissions.API
 RUN dotnet publish -c Release -o out
 
 # Use the official .NET runtime image to run the application
-FROM mcr.microsoft.com/dotnet/aspnet:8.0-preview
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 COPY --from=build /app/UserPermissions.API/out .
 ENTRYPOINT ["dotnet", "UserPermissions.API.dll"]

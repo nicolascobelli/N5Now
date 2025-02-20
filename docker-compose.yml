@@ -20,7 +20,7 @@ services:
       - kafka
 
   db:
-    image: mcr.microsoft.com/mssql/server:2019-latest
+    image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
       SA_PASSWORD: "Your_password123"
       ACCEPT_EULA: "Y"
@@ -28,7 +28,7 @@ services:
       - "1433:1433"
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.17.2
     environment:
       - discovery.type=single-node
     ports:
