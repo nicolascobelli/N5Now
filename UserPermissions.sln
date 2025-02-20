@@ -1,0 +1,51 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31912.275
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{D2C5E5A1-8F5E-4A6B-9C5A-1F5E8F5E4A6B}") = "UserPermissions.API", "UserPermissions.API\UserPermissions.API.csproj", "{D2C5E5A1-8F5E-4A6B-9C5A-1F5E8F5E4A6B}"
+EndProject
+Project("{E3D6F6B2-9G6F-5B7C-0D6B-2G6F9G6F5B7C}") = "UserPermissions.Application", "UserPermissions.Application\UserPermissions.Application.csproj", "{E3D6F6B2-9G6F-5B7C-0D6B-2G6F9G6F5B7C}"
+EndProject
+Project("{F4E7G7C3-0H7G-6C8D-1E7C-3H7G0H7G6C8D}") = "UserPermissions.Domain", "UserPermissions.Domain\UserPermissions.Domain.csproj", "{F4E7G7C3-0H7G-6C8D-1E7C-3H7G0H7G6C8D}"
+EndProject
+Project("{G5F8H8D4-1I8H-7D9E-2F8D-4I8H1I8H7D9E}") = "UserPermissions.Infrastructure", "UserPermissions.Infrastructure\UserPermissions.Infrastructure.csproj", "{G5F8H8D4-1I8H-7D9E-2F8D-4I8H1I8H7D9E}"
+EndProject
+Project("{H6G9I9E5-2J9I-8E0F-3G9E-5J9I2J9I8E0F}") = "UserPermissions.UnitTests", "UserPermissions.UnitTests\UserPermissions.UnitTests.csproj", "{H6G9I9E5-2J9I-8E0F-3G9E-5J9I2J9I8E0F}"
+EndProject
+Project("{I7H0J0F6-3K0J-9F1G-4H0F-6K0J3K0J9F1G}") = "UserPermissions.IntegrationTests", "UserPermissions.IntegrationTests\UserPermissions.IntegrationTests.csproj", "{I7H0J0F6-3K0J-9F1G-4H0F-6K0J3K0J9F1G}"
+EndProject
+Global
+    GlobalSection(SolutionConfigurationPlatforms) = preSolution
+        Debug|Any CPU = Debug|Any CPU
+        Release|Any CPU = Release|Any CPU
+    EndGlobalSection
+    GlobalSection(ProjectConfigurationPlatforms) = postSolution
+        {D2C5E5A1-8F5E-4A6B-9C5A-1F5E8F5E4A6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {D2C5E5A1-8F5E-4A6B-9C5A-1F5E8F5E4A6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {D2C5E5A1-8F5E-4A6B-9C5A-1F5E8F5E4A6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {D2C5E5A1-8F5E-4A6B-9C5A-1F5E8F5E4A6B}.Release|Any CPU.Build.0 = Release|Any CPU
+        {E3D6F6B2-9G6F-5B7C-0D6B-2G6F9G6F5B7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {E3D6F6B2-9G6F-5B7C-0D6B-2G6F9G6F5B7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {E3D6F6B2-9G6F-5B7C-0D6B-2G6F9G6F5B7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {E3D6F6B2-9G6F-5B7C-0D6B-2G6F9G6F5B7C}.Release|Any CPU.Build.0 = Release|Any CPU
+        {F4E7G7C3-0H7G-6C8D-1E7C-3H7G0H7G6C8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {F4E7G7C3-0H7G-6C8D-1E7C-3H7G0H7G6C8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {F4E7G7C3-0H7G-6C8D-1E7C-3H7G0H7G6C8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {F4E7G7C3-0H7G-6C8D-1E7C-3H7G0H7G6C8D}.Release|Any CPU.Build.0 = Release|Any CPU
+        {G5F8H8D4-1I8H-7D9E-2F8D-4I8H1I8H7D9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {G5F8H8D4-1I8H-7D9E-2F8D-4I8H1I8H7D9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {G5F8H8D4-1I8H-7D9E-2F8D-4I8H1I8H7D9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {G5F8H8D4-1I8H-7D9E-2F8D-4I8H1I8H7D9E}.Release|Any CPU.Build.0 = Release|Any CPU
+        {H6G9I9E5-2J9I-8E0F-3G9E-5J9I2J9I8E0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {H6G9I9E5-2J9I-8E0F-3G9E-5J9I2J9I8E0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {H6G9I9E5-2J9I-8E0F-3G9E-5J9I2J9I8E0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {H6G9I9E5-2J9I-8E0F-3G9E-5J9I2J9I8E0F}.Release|Any CPU.Build.0 = Release|Any CPU
+        {I7H0J0F6-3K0J-9F1G-4H0F-6K0J3K0J9F1G}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {I7H0J0F6-3K0J-9F1G-4H0F-6K0J3K0J9F1G}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {I7H0J0F6-3K0J-9F1G-4H0F-6K0J3K0J9F1G}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {I7H0J0F6-3K0J-9F1G-4H0F-6K0J3K0J9F1G}.Release|Any CPU.Build.0 = Release|Any CPU
+    EndGlobalSection
+    GlobalSection(SolutionProperties) = preSolution
+        HideSolutionNode = FALSE
+    EndGlobalSection
+EndGlobal

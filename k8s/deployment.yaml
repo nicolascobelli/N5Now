@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: userpermissions-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: userpermissions-api
+  template:
+    metadata:
+      labels:
+        app: userpermissions-api
+    spec:
+      containers:
+      - name: userpermissions-api
+        image: userpermissions.api:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Development"
+        - name: ConnectionStrings__DefaultConnection
+          value: "Server=db;Database=UserPermissionsDb;User Id=sa;Password=Your_password123;"
+        - name: ElasticSearch__Url
+          value: "http://elasticsearch:9200"
+        - name: Kafka__BootstrapServers
+          value: "kafka:9092"
+        - name: Kafka__TopicName
+          value: "userpermissions-topic"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: userpermissions-api
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: userpermissions-api
