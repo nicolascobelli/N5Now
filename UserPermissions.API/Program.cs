@@ -39,24 +39,38 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Configure Elasticsearch
-var elasticsearchUrl = builder.Configuration["ElasticSearch:Url"];
+var elasticsearchUrl = builder.Configuration["ElasticSearch:Url"] ?? "http://localhost:9200";
+
 if (string.IsNullOrEmpty(elasticsearchUrl))
 {
     throw new InvalidOperationException("Elasticsearch URL is not configured.");
 }
-var settings = new ConnectionSettings(new Uri(elasticsearchUrl))
-    .DefaultIndex("userpermissions");
-var client = new ElasticClient(settings);
-builder.Services.AddSingleton<IElasticClient>(client);
+
+// Register ConnectionSettings
+builder.Services.AddSingleton(sp =>
+{
+    var settings = new ConnectionSettings(new Uri(elasticsearchUrl))
+        .DefaultIndex("userpermissions");
+
+    return settings;
+});
+
+// Register ElasticClient using DI
+builder.Services.AddSingleton<IElasticClient>(sp =>
+{
+    var settings = sp.GetRequiredService<ConnectionSettings>();
+    return new ElasticClient(settings);
+});
 
 // Configure Kafka
-var producerConfig = new ProducerConfig
+builder.Services.AddSingleton<IProducer<string, string>>(sp =>
 {
-    BootstrapServers = builder.Configuration["Kafka:BootstrapServers"]
-};
-builder.Services.AddSingleton(producerConfig);
-builder.Services.AddSingleton<IProducer<string, string>>(sp => new ProducerBuilder<string, string>(producerConfig).Build());
-
+    var config = new ProducerConfig
+    {
+        BootstrapServers = builder.Configuration["Kafka:BootstrapServers"]
+    };
+    return new ProducerBuilder<string, string>(config).Build();
+});
 var app = builder.Build();
 
 // Apply database migrations

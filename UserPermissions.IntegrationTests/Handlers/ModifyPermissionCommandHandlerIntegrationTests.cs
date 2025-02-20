@@ -73,6 +73,9 @@ namespace UserPermissions.IntegrationTests.Handlers
                 EndDate = DateTime.Now.AddDays(3)
             };
 
+            _elasticClientMock.Setup(ec => ec.IndexDocumentAsync(It.Is<Permission>(p => p.Id == permission.Id), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new IndexResponse());
+
             // Act
             var result = await _handler.Handle(command, CancellationToken.None);
             var updatedPermission = await _context.Permissions.FirstOrDefaultAsync(p => p.Id == permission.Id);
