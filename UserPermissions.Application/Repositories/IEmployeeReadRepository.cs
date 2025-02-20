@@ -6,6 +6,6 @@ namespace UserPermissions.Application.Repositories
 {
     public interface IEmployeeReadRepository
     {
-        Task<Employee> GetEmployeeByIdAsync(int employeeId, CancellationToken cancellationToken);
+        Task<Employee?> GetEmployeeByIdAsync(int employeeId, CancellationToken cancellationToken);
     }
 }

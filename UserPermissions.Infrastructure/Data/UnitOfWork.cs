@@ -8,9 +8,9 @@ namespace UserPermissions.Infrastructure.Data
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _context;
-        private IEmployeeReadRepository _employeeReadRepository;
-        private IPermissionRepository _permissionRepository;
-        private IPermissionTypeReadRepository _permissionTypeReadRepository;
+        private IEmployeeReadRepository _employeeReadRepository = null!;
+        private IPermissionRepository _permissionRepository = null!;
+        private IPermissionTypeReadRepository _permissionTypeReadRepository = null!;
 
         public UnitOfWork(ApplicationDbContext context)
         {

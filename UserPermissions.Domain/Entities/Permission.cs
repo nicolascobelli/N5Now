@@ -3,11 +3,11 @@ namespace UserPermissions.Domain.Entities
     public class Permission
     {
         public int Id { get; set; }
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty; 
         public int EmployeeId { get; set; }
-        public Employee Employee { get; set; }
+        public Employee Employee { get; set; } = null!;
         public int PermissionTypeId { get; set; }
-        public PermissionType PermissionType { get; set; }
+        public PermissionType PermissionType { get; set; } = null!;
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
 

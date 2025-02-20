@@ -1,4 +1,7 @@
-public class SQLServerConfig
+namespace UserPermissions.Infrastructure.SQLServer
 {
-    public string ConnectionString { get; set; }
+    public class SQLServerConfig
+    {
+        public string ConnectionString { get; set; } = string.Empty;
+    }
 }

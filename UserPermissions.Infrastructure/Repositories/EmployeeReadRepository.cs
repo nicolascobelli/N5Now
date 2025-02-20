@@ -16,7 +16,7 @@ namespace UserPermissions.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<Employee> GetEmployeeByIdAsync(int employeeId, CancellationToken cancellationToken)
+        public async Task<Employee?> GetEmployeeByIdAsync(int employeeId, CancellationToken cancellationToken)
         {
             return await _context.Employees
                 .FirstOrDefaultAsync(e => e.Id == employeeId, cancellationToken);

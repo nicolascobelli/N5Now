@@ -1,5 +1,8 @@
-public class KafkaConfig
+namespace UserPermissions.Infrastructure.Kafka
 {
-    public string BootstrapServers { get; set; }
-    public string TopicName { get; set; }
+    public class KafkaConfig
+    {
+        public string BootstrapServers { get; set; } = string.Empty;
+        public string TopicName { get; set; } = string.Empty;
+    }
 }

@@ -13,13 +13,13 @@ namespace UserPermissions.Application.Queries.GetPermissions
     {
         private readonly IPermissionsReadRepository _permissionsReadRepository;
         private readonly IProducer<string, string> _producer;
-        private readonly string _kafkaTopic;
+        private readonly string _kafkaTopic = string.Empty;
 
         public GetPermissionsQueryHandler(IPermissionsReadRepository permissionsReadRepository, IProducer<string, string> producer, IConfiguration configuration)
         {
             _permissionsReadRepository = permissionsReadRepository;
             _producer = producer;
-            _kafkaTopic = configuration["Kafka:TopicName"];
+            _kafkaTopic = configuration["Kafka:TopicName"]!;
         }
 
         public async Task<List<PermissionDto>> Handle(GetPermissionsQuery request, CancellationToken cancellationToken)

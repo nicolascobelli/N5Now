@@ -1,5 +1,8 @@
-public class ElasticSearchConfig
+namespace UserPermissions.Infrastructure.ElasticSearch
 {
-    public string Url { get; set; }
-    public string IndexName { get; set; }
+    public class ElasticSearchConfig
+    {
+        public string Url { get; set; } = string.Empty;
+        public string IndexName { get; set; } = string.Empty;
+    }
 }

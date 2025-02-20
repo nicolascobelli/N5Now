@@ -6,6 +6,6 @@ namespace UserPermissions.Application.Repositories
 {
     public interface IPermissionTypeReadRepository
     {
-        Task<PermissionType> GetPermissionTypeByIdAsync(int permissionTypeId, CancellationToken cancellationToken);
+        Task<PermissionType?> GetPermissionTypeByIdAsync(int permissionTypeId, CancellationToken cancellationToken);
     }
 }

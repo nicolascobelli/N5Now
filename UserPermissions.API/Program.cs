@@ -39,7 +39,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Configure Elasticsearch
-var settings = new ConnectionSettings(new Uri(builder.Configuration["ElasticSearch:Url"]))
+var elasticsearchUrl = builder.Configuration["ElasticSearch:Url"];
+if (string.IsNullOrEmpty(elasticsearchUrl))
+{
+    throw new InvalidOperationException("Elasticsearch URL is not configured.");
+}
+var settings = new ConnectionSettings(new Uri(elasticsearchUrl))
     .DefaultIndex("userpermissions");
 var client = new ElasticClient(settings);
 builder.Services.AddSingleton<IElasticClient>(client);
