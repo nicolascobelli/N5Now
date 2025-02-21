@@ -47,6 +47,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // Configure Elasticsearch
 var elasticsearchUrl = builder.Configuration["ElasticSearch:Url"] ?? "http://localhost:9200";
+var elasticsearchIndex = builder.Configuration["ElasticSearch:Index"] ?? "userpermissions";
 
 if (string.IsNullOrEmpty(elasticsearchUrl))
 {
@@ -54,7 +55,7 @@ if (string.IsNullOrEmpty(elasticsearchUrl))
 }
 
 var elasticSettings = new ConnectionSettings(new Uri(elasticsearchUrl))
-    .DefaultIndex("my-index");
+    .DefaultIndex(elasticsearchIndex);
 
 var elasticClient = new ElasticClient(elasticSettings);
 builder.Services.AddSingleton<IElasticClient>(elasticClient);
@@ -63,7 +64,7 @@ builder.Services.AddSingleton<IElasticClient>(elasticClient);
 builder.Services.AddSingleton(sp =>
 {
     var settings = new ConnectionSettings(new Uri(elasticsearchUrl))
-        .DefaultIndex("userpermissions");
+        .DefaultIndex(elasticsearchIndex);
 
     return settings;
 });

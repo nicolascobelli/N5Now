@@ -46,7 +46,7 @@ namespace UserPermissions.Application.Commands.ModifyPermission
             await _messageService.PublishAsync("Modify", cancellationToken);
 
             // Index document in Elasticsearch
-            await _elasticClient.IndexDocumentAsync(permission, cancellationToken);
+            await _elasticClient.IndexDocumentAsync(permission);
 
             return true;
         }
