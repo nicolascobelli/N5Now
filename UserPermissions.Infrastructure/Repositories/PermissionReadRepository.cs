@@ -9,11 +9,11 @@ using UserPermissions.Infrastructure.Data;
 
 namespace UserPermissions.Infrastructure.Repositories
 {
-    public class PermissionsReadRepository : IPermissionsReadRepository
+    public class PermissionReadRepository : IPermissionReadRepository
     {
         private readonly ApplicationDbContext _context;
 
-        public PermissionsReadRepository(ApplicationDbContext context)
+        public PermissionReadRepository(ApplicationDbContext context)
         {
             _context = context;
         }

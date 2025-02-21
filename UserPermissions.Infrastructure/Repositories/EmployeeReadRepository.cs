@@ -18,7 +18,7 @@ namespace UserPermissions.Infrastructure.Repositories
 
         public async Task<Employee?> GetEmployeeByIdAsync(int employeeId, CancellationToken cancellationToken)
         {
-            return await _context.Employees
+            return await _context.Employees.AsNoTracking()
                 .FirstOrDefaultAsync(e => e.Id == employeeId, cancellationToken);
         }
     }

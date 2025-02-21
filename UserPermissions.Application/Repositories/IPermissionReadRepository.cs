@@ -5,7 +5,7 @@ using UserPermissions.Domain.Entities;
 
 namespace UserPermissions.Application.Repositories
 {
-    public interface IPermissionsReadRepository
+    public interface IPermissionReadRepository
     {
         Task<List<Permission>> GetAllPermissionsAsync(CancellationToken cancellationToken);
     }

@@ -18,7 +18,7 @@ namespace UserPermissions.Infrastructure.Repositories
 
         public async Task<PermissionType?> GetPermissionTypeByIdAsync(int permissionTypeId, CancellationToken cancellationToken)
         {
-            return await _context.PermissionTypes
+            return await _context.PermissionTypes.AsNoTracking()
                 .FirstOrDefaultAsync(pt => pt.Id == permissionTypeId, cancellationToken);
         }
     }

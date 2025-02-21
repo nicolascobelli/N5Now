@@ -67,5 +67,32 @@ namespace UserPermissions.IntegrationTests.Repositories
             Assert.Equal(permission.StartDate, result.StartDate);
             Assert.Equal(permission.EndDate, result.EndDate);
         }
+
+        [Fact]
+        public async Task GetPermissionByIdAndEmployeeIdAsync_ShouldReturnPermission_WhenPermissionExists()
+        {
+            // Arrange
+            var permission = new Permission("Test Permission", 1, 1, DateTime.Now, DateTime.Now.AddDays(1));
+            await _context.Permissions.AddAsync(permission);
+            await _context.SaveChangesAsync();
+
+            // Act
+            var result = await _repository.GetPermissionByIdAndEmployeeIdAsync(1, 1, CancellationToken.None);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(1, result.Id);
+            Assert.Equal(1, result.EmployeeId);
+        }
+
+        [Fact]
+        public async Task GetPermissionByIdAndEmployeeIdAsync_ShouldReturnNull_WhenPermissionDoesNotExist()
+        {
+            // Act
+            var result = await _repository.GetPermissionByIdAndEmployeeIdAsync(999, 999, CancellationToken.None);
+
+            // Assert
+            Assert.Null(result);
+        }
     }
 }

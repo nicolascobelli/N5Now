@@ -83,7 +83,7 @@ builder.Services.AddSingleton<IMessageService, MessageService>();
 builder.Services.AddScoped<IEmployeeReadRepository, EmployeeReadRepository>();
 builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
 builder.Services.AddScoped<IPermissionTypeReadRepository, PermissionTypeReadRepository>();
-builder.Services.AddScoped<IPermissionsReadRepository, PermissionsReadRepository>();
+builder.Services.AddScoped<IPermissionReadRepository, PermissionReadRepository>();
 
 // Register UnitOfWork
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
