@@ -11,10 +11,10 @@ namespace UserPermissions.Application.Queries.GetPermissions
 {
     public class GetPermissionsQueryHandler : IRequestHandler<GetPermissionsQuery, List<PermissionDto>>
     {
-        private readonly IPermissionRepository _permissionRepository;
+        private readonly IPermissionsReadRepository _permissionRepository;
         private readonly IMessageService _messageService;
 
-        public GetPermissionsQueryHandler(IPermissionRepository permissionRepository, IMessageService messageService)
+        public GetPermissionsQueryHandler(IPermissionsReadRepository permissionRepository, IMessageService messageService)
         {
             _permissionRepository = permissionRepository;
             _messageService = messageService;

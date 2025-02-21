@@ -19,14 +19,14 @@ namespace UserPermissions.IntegrationTests.Handlers
     public class GetPermissionsQueryHandlerIntegrationTests : IClassFixture<IntegrationTestFixture>
     {
         private readonly ApplicationDbContext _context;
-        private readonly IPermissionRepository _repository;
+        private readonly IPermissionsReadRepository _repository;
         private readonly GetPermissionsQueryHandler _handler;
         private readonly Mock<IMessageService> _messageServiceMock;
 
         public GetPermissionsQueryHandlerIntegrationTests(IntegrationTestFixture fixture)
         {
             _context = fixture.Context;
-            _repository = new PermissionRepository(_context);
+            _repository = new PermissionsReadRepository(_context);
             _messageServiceMock = fixture.MessageServiceMock;
             _handler = new GetPermissionsQueryHandler(_repository, _messageServiceMock.Object);
         }

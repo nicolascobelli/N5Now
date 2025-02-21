@@ -3,8 +3,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using UserPermissions.Application.DTOs;
 using UserPermissions.Application.Repositories;
+using UserPermissions.Domain.Entities;
 using UserPermissions.Infrastructure.Data;
 
 namespace UserPermissions.Infrastructure.Repositories
@@ -18,20 +18,11 @@ namespace UserPermissions.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<List<PermissionDto>> GetPermissionsByEmployeeIdAsync(int employeeId, CancellationToken cancellationToken)
+         public async Task<List<Permission>> GetAllPermissionsAsync(CancellationToken cancellationToken)
         {
-            var permissions = await _context.Permissions
-                .Where(p => p.EmployeeId == employeeId)
+            return await _context.Permissions
+                .AsNoTracking()
                 .ToListAsync(cancellationToken);
-
-            return permissions.Select(p => new PermissionDto
-            {
-                Id = p.Id,
-                Description = p.Description,
-                Type = p.PermissionType.Name,
-                StartDate = p.StartDate,
-                EndDate = p.EndDate
-            }).ToList();
         }
     }
 }

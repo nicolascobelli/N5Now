@@ -34,10 +34,5 @@ namespace UserPermissions.Infrastructure.Repositories
             return await _context.Permissions
                 .FirstOrDefaultAsync(p => p.Id == permissionId && p.EmployeeId == employeeId, cancellationToken)!;
         }
-
-        public async Task<List<Permission>> GetAllPermissionsAsync(CancellationToken cancellationToken)
-        {
-            return await _context.Permissions.ToListAsync(cancellationToken);
-        }
     }
 }

@@ -15,13 +15,13 @@ namespace UserPermissions.UnitTests.Handlers
 {
     public class GetPermissionsQueryHandlerTests
     {
-        private readonly Mock<IPermissionRepository> _permissionRepositoryMock;
+        private readonly Mock<IPermissionsReadRepository> _permissionRepositoryMock;
         private readonly GetPermissionsQueryHandler _handler;
         private readonly Mock<IMessageService> _messageServiceMock;
 
         public GetPermissionsQueryHandlerTests()
         {
-            _permissionRepositoryMock = new Mock<IPermissionRepository>();
+            _permissionRepositoryMock = new Mock<IPermissionsReadRepository>();
             _messageServiceMock = new Mock<IMessageService>();
 
             _handler = new GetPermissionsQueryHandler(

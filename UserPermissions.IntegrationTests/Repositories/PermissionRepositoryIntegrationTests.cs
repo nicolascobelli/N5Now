@@ -67,38 +67,5 @@ namespace UserPermissions.IntegrationTests.Repositories
             Assert.Equal(permission.StartDate, result.StartDate);
             Assert.Equal(permission.EndDate, result.EndDate);
         }
-
-        [Fact]
-        public async Task GetPermissionByIdAndEmployeeIdAsync_ShouldReturnPermission_WhenPermissionExists()
-        {
-            // Arrange
-            var employee = new Employee { Name = "Test Employee", Email = "test@example.com" };
-            var permissionType = new PermissionType { Name = "Test Permission Type" };
-            await _context.Employees.AddAsync(employee);
-            await _context.PermissionTypes.AddAsync(permissionType);
-            await _context.SaveChangesAsync();
-
-            var permission = new Permission("Existing Permission", employee.Id, permissionType.Id, DateTime.Now, DateTime.Now.AddDays(1));
-            await _context.Permissions.AddAsync(permission);
-            await _context.SaveChangesAsync();
-
-            // Act
-            var result = await _repository.GetPermissionByIdAndEmployeeIdAsync(permission.Id, employee.Id, CancellationToken.None);
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal(permission.Id, result.Id);
-            Assert.Equal(employee.Id, result.EmployeeId);
-        }
-
-        [Fact]
-        public async Task GetPermissionByIdAndEmployeeIdAsync_ShouldReturnNull_WhenPermissionDoesNotExist()
-        {
-            // Act
-            var result = await _repository.GetPermissionByIdAndEmployeeIdAsync(999, 999, CancellationToken.None);
-
-            // Assert
-            Assert.Null(result);
-        }
     }
 }

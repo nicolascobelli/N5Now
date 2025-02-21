@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using UserPermissions.Application.DTOs;
+using UserPermissions.Domain.Entities;
 
 namespace UserPermissions.Application.Repositories
 {
     public interface IPermissionsReadRepository
     {
-        Task<List<PermissionDto>> GetPermissionsByEmployeeIdAsync(int employeeId, CancellationToken cancellationToken);
+        Task<List<Permission>> GetAllPermissionsAsync(CancellationToken cancellationToken);
     }
 }

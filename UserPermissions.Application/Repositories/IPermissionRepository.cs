@@ -10,6 +10,5 @@ namespace UserPermissions.Application.Repositories
         Task AddPermissionAsync(Permission permission, CancellationToken cancellationToken);
         Task UpdatePermissionAsync(Permission permission, CancellationToken cancellationToken);
         Task<Permission?> GetPermissionByIdAndEmployeeIdAsync(int permissionId, int employeeId, CancellationToken cancellationToken);
-        Task<List<Permission>> GetAllPermissionsAsync(CancellationToken cancellationToken);
     }
 }
