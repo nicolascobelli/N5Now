@@ -27,6 +27,9 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog();
 
+// Register Serilog as a singleton
+builder.Services.AddSingleton<Serilog.ILogger>(Log.Logger);
+
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -36,7 +39,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // Add MediatR
-builder.Services.AddMediatR(typeof(Program).Assembly);
+builder.Services.AddMediatR(typeof(RequestPermissionCommand).Assembly);
 
 // Configure database context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
