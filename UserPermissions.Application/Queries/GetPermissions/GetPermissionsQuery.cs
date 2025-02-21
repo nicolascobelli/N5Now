@@ -6,6 +6,5 @@ namespace UserPermissions.Application.Queries.GetPermissions
 {
     public class GetPermissionsQuery : IRequest<List<PermissionDto>>
     {
-        public int EmployeeId { get; set; }
     }
 }

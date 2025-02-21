@@ -11,10 +11,10 @@ namespace UserPermissions.Application.Queries.GetPermissions
 {
     public class GetPermissionsQueryHandler : IRequestHandler<GetPermissionsQuery, List<PermissionDto>>
     {
-        private readonly IPermissionsReadRepository _permissionRepository;
+        private readonly IPermissionRepository _permissionRepository;
         private readonly IMessageService _messageService;
 
-        public GetPermissionsQueryHandler(IPermissionsReadRepository permissionRepository, IMessageService messageService)
+        public GetPermissionsQueryHandler(IPermissionRepository permissionRepository, IMessageService messageService)
         {
             _permissionRepository = permissionRepository;
             _messageService = messageService;
@@ -22,14 +22,20 @@ namespace UserPermissions.Application.Queries.GetPermissions
 
         public async Task<List<PermissionDto>> Handle(GetPermissionsQuery request, CancellationToken cancellationToken)
         {
-            var permissions = await _permissionRepository.GetPermissionsByEmployeeIdAsync(request.EmployeeId, cancellationToken);
+            var permissions = await _permissionRepository.GetAllPermissionsAsync(cancellationToken);
+            var permissionDtos = permissions.Select(p => new PermissionDto
+            {
+                Id = p.Id,
+                Description = p.Description,
+                StartDate = p.StartDate,
+                EndDate = p.EndDate,
+            }).ToList();
 
-            // Publish Kafka message
-            await _messageService.PublishAsync("Get", cancellationToken);
+            await _messageService.PublishAsync("GetPermissions", cancellationToken);
 
-            //i dont understand what to send in elastic here.
+            //i dont know what to send to elastic here, all of them?
 
-            return permissions;
+            return permissionDtos;
         }
     }
 }
