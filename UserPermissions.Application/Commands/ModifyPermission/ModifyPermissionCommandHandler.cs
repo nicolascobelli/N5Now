@@ -32,7 +32,7 @@ namespace UserPermissions.Application.Commands.ModifyPermission
                 return false; // Employee not found
             }
 
-            var permission = await _unitOfWork.PermissionRepository.GetPermissionByIdAsync(request.PermissionId, cancellationToken);
+            var permission = await _unitOfWork.PermissionRepository.GetPermissionByIdAndEmployeeIdAsync(request.PermissionId, request.EmployeeId, cancellationToken);
             if (permission == null)
             {
                 return false; // Permission not found

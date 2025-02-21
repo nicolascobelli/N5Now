@@ -13,37 +13,25 @@ using UserPermissions.Infrastructure.Repositories;
 using Xunit;
 using Microsoft.Extensions.Configuration;
 using Nest;
+using UserPermissions.IntegrationTests;
 
 namespace UserPermissions.IntegrationTests.Handlers
 {
-    public class RequestPermissionCommandHandlerIntegrationTests : IDisposable
+    public class RequestPermissionCommandHandlerIntegrationTests : IClassFixture<IntegrationTestFixture>
     {
         private readonly ApplicationDbContext _context;
+        private readonly UnitOfWork _unitOfWork;
         private readonly RequestPermissionCommandHandler _handler;
         private readonly Mock<IMessageService> _messageServiceMock;
         private readonly Mock<IElasticClient> _elasticClientMock;
-        private readonly UnitOfWork _unitOfWork;
 
-        public RequestPermissionCommandHandlerIntegrationTests()
+        public RequestPermissionCommandHandlerIntegrationTests(IntegrationTestFixture fixture)
         {
-            var connection = new SqliteConnection("DataSource=:memory:");
-            connection.Open();
-
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseSqlite(connection)
-                .Options;
-
-            _context = new ApplicationDbContext(options);
-            _context.Database.EnsureCreated();
-
+            _context = fixture.Context;
             _unitOfWork = new UnitOfWork(_context);
-            _messageServiceMock = new Mock<IMessageService>();
-            _elasticClientMock = new Mock<IElasticClient>();
-
-            _handler = new RequestPermissionCommandHandler(
-                _unitOfWork,
-                _messageServiceMock.Object,
-                _elasticClientMock.Object);
+            _messageServiceMock = fixture.MessageServiceMock;
+            _elasticClientMock = fixture.ElasticClientMock;
+            _handler = new RequestPermissionCommandHandler(_unitOfWork, _messageServiceMock.Object, _elasticClientMock.Object);
         }
 
         [Fact]
@@ -65,7 +53,8 @@ namespace UserPermissions.IntegrationTests.Handlers
                 EndDate = DateTime.Now.AddDays(1)
             };
 
-            _elasticClientMock.Setup(ec => ec.IndexDocumentAsync(It.IsAny<Permission>(), It.IsAny<CancellationToken>()))
+
+            _elasticClientMock.Setup(ec => ec.IndexDocumentAsync(It.Is<Permission>(p => p.Description == command.Description), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new IndexResponse());
 
             // Act
@@ -73,7 +62,6 @@ namespace UserPermissions.IntegrationTests.Handlers
             var permission = await _context.Permissions.FirstOrDefaultAsync(p => p.Id == result);
 
             // Assert
-            Assert.NotNull(result);
             Assert.NotNull(permission);
             Assert.Equal(command.Description, permission.Description);
 
@@ -81,12 +69,7 @@ namespace UserPermissions.IntegrationTests.Handlers
             _messageServiceMock.Verify(ms => ms.PublishAsync("Request", It.IsAny<CancellationToken>()), Times.Once);
 
             // Verify Elasticsearch indexing
-            _elasticClientMock.Verify(ec => ec.IndexDocumentAsync(It.Is<Permission>(p => p.Id == result), It.IsAny<CancellationToken>()), Times.Once);
-        }
-
-        public void Dispose()
-        {
-            _context?.Dispose();
+            _elasticClientMock.Verify(ec => ec.IndexDocumentAsync(It.Is<Permission>(p => p.Description == command.Description), It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }

@@ -124,10 +124,7 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers();
-    endpoints.MapSwagger(); // Ensure the Swagger endpoint is mapped
-});
+app.MapControllers();
+app.MapSwagger(); // Ensure the Swagger endpoint is mapped
 
 app.Run();

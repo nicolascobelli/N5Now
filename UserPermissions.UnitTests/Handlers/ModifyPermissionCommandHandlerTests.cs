@@ -6,8 +6,6 @@ using UserPermissions.Application.Commands.ModifyPermission;
 using UserPermissions.Application.Repositories;
 using UserPermissions.Domain.Entities;
 using Xunit;
-using Confluent.Kafka;
-using Microsoft.Extensions.Configuration;
 using Nest;
 using UserPermissions.Application.Services;
 
@@ -25,7 +23,6 @@ namespace UserPermissions.UnitTests.Handlers
             _unitOfWorkMock = new Mock<IUnitOfWork>();
             _elasticClientMock = new Mock<IElasticClient>();
             _messageServiceMock = new Mock<IMessageService>();
-
 
             _handler = new ModifyPermissionCommandHandler(
                 _unitOfWorkMock.Object,
@@ -53,7 +50,7 @@ namespace UserPermissions.UnitTests.Handlers
             // Arrange
             var command = new ModifyPermissionCommand { EmployeeId = 1, PermissionId = 1, StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(1) };
             _unitOfWorkMock.Setup(uow => uow.EmployeeReadRepository.GetEmployeeByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(new Employee { Name = "Test Employee", Email = "test@example.com" });
-            _unitOfWorkMock.Setup(uow => uow.PermissionRepository.GetPermissionByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync((Permission)null);
+            _unitOfWorkMock.Setup(uow => uow.PermissionRepository.GetPermissionByIdAndEmployeeIdAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync((Permission)null);
 
             // Act
             var result = await _handler.Handle(command, CancellationToken.None);
@@ -71,7 +68,7 @@ namespace UserPermissions.UnitTests.Handlers
             var permission = new Permission("Existing Permission", employee.Id, permissionType.Id, DateTime.Now, DateTime.Now.AddDays(1));
 
             _unitOfWorkMock.Setup(uow => uow.EmployeeReadRepository.GetEmployeeByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(employee);
-            _unitOfWorkMock.Setup(uow => uow.PermissionRepository.GetPermissionByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(permission);
+            _unitOfWorkMock.Setup(uow => uow.PermissionRepository.GetPermissionByIdAndEmployeeIdAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(permission);
             _unitOfWorkMock.Setup(uow => uow.PermissionRepository.UpdatePermissionAsync(It.IsAny<Permission>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
             _elasticClientMock.Setup(client => client.IndexDocumentAsync(It.IsAny<Permission>(), It.IsAny<CancellationToken>())).ReturnsAsync(new Nest.IndexResponse());
 
@@ -107,7 +104,7 @@ namespace UserPermissions.UnitTests.Handlers
 
             _unitOfWorkMock.Setup(uow => uow.EmployeeReadRepository.GetEmployeeByIdAsync(employee.Id, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(employee);
-            _unitOfWorkMock.Setup(uow => uow.PermissionRepository.GetPermissionByIdAsync(permission.Id, It.IsAny<CancellationToken>()))
+            _unitOfWorkMock.Setup(uow => uow.PermissionRepository.GetPermissionByIdAndEmployeeIdAsync(permission.Id, employee.Id, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(permission);
             _unitOfWorkMock.Setup(uow => uow.PermissionRepository.UpdatePermissionAsync(It.IsAny<Permission>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);

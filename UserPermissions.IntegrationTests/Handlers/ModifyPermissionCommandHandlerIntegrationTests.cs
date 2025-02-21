@@ -16,7 +16,7 @@ using Nest;
 
 namespace UserPermissions.IntegrationTests.Handlers
 {
-    public class ModifyPermissionCommandHandlerIntegrationTests : IDisposable
+    public class ModifyPermissionCommandHandlerIntegrationTests : IClassFixture<IntegrationTestFixture>
     {
         private readonly ApplicationDbContext _context;
         private readonly ModifyPermissionCommandHandler _handler;
@@ -24,21 +24,12 @@ namespace UserPermissions.IntegrationTests.Handlers
         private readonly Mock<IElasticClient> _elasticClientMock;
         private readonly UnitOfWork _unitOfWork;
 
-        public ModifyPermissionCommandHandlerIntegrationTests()
+        public ModifyPermissionCommandHandlerIntegrationTests(IntegrationTestFixture fixture)
         {
-            var connection = new SqliteConnection("DataSource=:memory:");
-            connection.Open();
-
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseSqlite(connection)
-                .Options;
-
-            _context = new ApplicationDbContext(options);
-            _context.Database.EnsureCreated();
-
+            _context = fixture.Context;
             _unitOfWork = new UnitOfWork(_context);
-            _messageServiceMock = new Mock<IMessageService>();
-            _elasticClientMock = new Mock<IElasticClient>();
+            _messageServiceMock = fixture.MessageServiceMock;
+            _elasticClientMock = fixture.ElasticClientMock;
 
             _handler = new ModifyPermissionCommandHandler(
                 _unitOfWork,
@@ -86,11 +77,6 @@ namespace UserPermissions.IntegrationTests.Handlers
 
             // Verify Elasticsearch indexing
             _elasticClientMock.Verify(ec => ec.IndexDocumentAsync(It.Is<Permission>(p => p.Id == permission.Id), It.IsAny<CancellationToken>()), Times.Once);
-        }
-
-        public void Dispose()
-        {
-            _context?.Dispose();
         }
     }
 }

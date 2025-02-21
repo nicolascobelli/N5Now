@@ -28,9 +28,10 @@ namespace UserPermissions.Infrastructure.Repositories
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<Permission?> GetPermissionByIdAsync(int permissionId, CancellationToken cancellationToken)
+        public async Task<Permission?> GetPermissionByIdAndEmployeeIdAsync(int permissionId, int employeeId, CancellationToken cancellationToken)
         {
-            return await _context.Permissions.FindAsync(new object[] { permissionId }, cancellationToken);
+            return await _context.Permissions
+                .FirstOrDefaultAsync(p => p.Id == permissionId && p.EmployeeId == employeeId, cancellationToken)!;
         }
     }
 }

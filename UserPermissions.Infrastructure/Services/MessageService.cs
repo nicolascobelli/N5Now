@@ -15,11 +15,16 @@ namespace UserPermissions.Infrastructure.Services
         public MessageService(IProducer<string, string> producer, IConfiguration configuration)
         {
             _producer = producer;
-            _topic = configuration["Kafka:TopicName"];
+            _topic = configuration["Kafka:TopicName"] ?? throw new ArgumentNullException(nameof(configuration), "Kafka:TopicName is null");
         }
 
         public async Task PublishAsync(string message, CancellationToken cancellationToken)
         {
+            if (message == null)
+            {
+                throw new ArgumentNullException(nameof(message));
+            }
+
             var kafkaMessage = new Message<string, string>
             {
                 Key = Guid.NewGuid().ToString(),

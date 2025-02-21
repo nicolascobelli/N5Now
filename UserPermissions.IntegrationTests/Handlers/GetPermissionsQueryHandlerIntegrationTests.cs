@@ -14,31 +14,24 @@ using UserPermissions.Infrastructure.Data;
 using UserPermissions.Infrastructure.Repositories;
 using Xunit;
 using UserPermissions.Application.Services;
+using UserPermissions.IntegrationTests;
+
 
 namespace UserPermissions.IntegrationTests.Handlers
 {
-    public class GetPermissionsQueryHandlerIntegrationTests : IDisposable
+    public class GetPermissionsQueryHandlerIntegrationTests : IClassFixture<IntegrationTestFixture>
     {
         private readonly ApplicationDbContext _context;
+        private readonly IPermissionsReadRepository _repository;
         private readonly GetPermissionsQueryHandler _handler;
         private readonly Mock<IMessageService> _messageServiceMock;
 
-        public GetPermissionsQueryHandlerIntegrationTests()
+        public GetPermissionsQueryHandlerIntegrationTests(IntegrationTestFixture fixture)
         {
-            var connection = new SqliteConnection("DataSource=:memory:");
-            connection.Open();
-
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseSqlite(connection)
-                .Options;
-
-            _context = new ApplicationDbContext(options);
-            _context.Database.EnsureCreated();
-
-            var permissionRepository = new PermissionsReadRepository(_context);
-            _messageServiceMock = new Mock<IMessageService>();
-
-            _handler = new GetPermissionsQueryHandler(permissionRepository, _messageServiceMock.Object);
+            _context = fixture.Context;
+            _repository = new PermissionsReadRepository(_context);
+            _messageServiceMock = fixture.MessageServiceMock;
+            _handler = new GetPermissionsQueryHandler(_repository, _messageServiceMock.Object);
         }
 
         [Fact]
@@ -81,11 +74,6 @@ namespace UserPermissions.IntegrationTests.Handlers
 
             // Verify message service
             _messageServiceMock.Verify(ms => ms.PublishAsync("Get", It.IsAny<CancellationToken>()), Times.Once);
-        }
-
-        public void Dispose()
-        {
-            _context?.Dispose();
         }
     }
 }

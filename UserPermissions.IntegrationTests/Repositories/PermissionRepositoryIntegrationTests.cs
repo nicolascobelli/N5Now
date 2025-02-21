@@ -1,33 +1,24 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using UserPermissions.Application.Repositories;
 using UserPermissions.Domain.Entities;
-using UserPermissions.Infrastructure.Data;
+using UserPermissions.Infrastructure.Data; 
 using UserPermissions.Infrastructure.Repositories;
+using UserPermissions.IntegrationTests;
 using Xunit;
 
 namespace UserPermissions.IntegrationTests.Repositories
 {
-    public class PermissionRepositoryIntegrationTests : IDisposable
+    public class PermissionRepositoryIntegrationTests : IClassFixture<IntegrationTestFixture>
     {
         private readonly ApplicationDbContext _context;
         private readonly PermissionRepository _repository;
 
-        public PermissionRepositoryIntegrationTests()
+        public PermissionRepositoryIntegrationTests(IntegrationTestFixture fixture)
         {
-            var connection = new SqliteConnection("DataSource=:memory:");
-            connection.Open();
-
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseSqlite(connection)
-                .Options;
-
-            _context = new ApplicationDbContext(options);
-            _context.Database.EnsureCreated();
-
+            _context = fixture.Context;
             _repository = new PermissionRepository(_context);
         }
 
@@ -78,7 +69,7 @@ namespace UserPermissions.IntegrationTests.Repositories
         }
 
         [Fact]
-        public async Task GetPermissionByIdAsync_ReturnsPermission()
+        public async Task GetPermissionByIdAndEmployeeIdAsync_ShouldReturnPermission_WhenPermissionExists()
         {
             // Arrange
             var employee = new Employee { Name = "Test Employee", Email = "test@example.com" };
@@ -92,16 +83,22 @@ namespace UserPermissions.IntegrationTests.Repositories
             await _context.SaveChangesAsync();
 
             // Act
-            var result = await _repository.GetPermissionByIdAsync(permission.Id, CancellationToken.None);
+            var result = await _repository.GetPermissionByIdAndEmployeeIdAsync(permission.Id, employee.Id, CancellationToken.None);
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(permission.Description, result.Description);
+            Assert.Equal(permission.Id, result.Id);
+            Assert.Equal(employee.Id, result.EmployeeId);
         }
 
-        public void Dispose()
+        [Fact]
+        public async Task GetPermissionByIdAndEmployeeIdAsync_ShouldReturnNull_WhenPermissionDoesNotExist()
         {
-            _context?.Dispose();
+            // Act
+            var result = await _repository.GetPermissionByIdAndEmployeeIdAsync(999, 999, CancellationToken.None);
+
+            // Assert
+            Assert.Null(result);
         }
     }
 }
