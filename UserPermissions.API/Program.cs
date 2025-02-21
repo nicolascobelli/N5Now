@@ -53,6 +53,12 @@ if (string.IsNullOrEmpty(elasticsearchUrl))
     throw new InvalidOperationException("Elasticsearch URL is not configured.");
 }
 
+var elasticSettings = new ConnectionSettings(new Uri(elasticsearchUrl))
+    .DefaultIndex("my-index");
+
+var elasticClient = new ElasticClient(elasticSettings);
+builder.Services.AddSingleton<IElasticClient>(elasticClient);
+
 // Register ConnectionSettings
 builder.Services.AddSingleton(sp =>
 {
