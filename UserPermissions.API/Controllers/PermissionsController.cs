@@ -28,7 +28,7 @@ namespace UserPermissions.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetPermissions()
         {
-            _logger.Information("Executing GetPermissions operation");
+            _logger.Information($"Executing {nameof(GetPermissionsQuery)} operation");
             var query = new GetPermissionsQuery();
             var result = await _mediator.Send(query);
             return Ok(result);
@@ -37,7 +37,7 @@ namespace UserPermissions.API.Controllers
         [HttpPut("{permissionId}")]
         public async Task<IActionResult> ModifyPermissions(int permissionId, [FromBody] ModifyPermissionCommand command)
         {
-            _logger.Information("Executing ModifyPermissions operation");
+            _logger.Information($"Executing {nameof(ModifyPermissionCommand)} operation");
             command.PermissionId = permissionId;
             var result = await _mediator.Send(command);
             if (!result)
@@ -50,7 +50,7 @@ namespace UserPermissions.API.Controllers
         [HttpPost]
         public async Task<IActionResult> RequestPermissions([FromBody] RequestPermissionCommand command)
         {
-            _logger.Information("Executing RequestPermissions operation");
+             _logger.Information($"Executing {nameof(RequestPermissionCommand)} operation");
             var result = await _mediator.Send(command);
             if (result == null)
             {
