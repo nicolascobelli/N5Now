@@ -14,7 +14,7 @@ using Xunit;
 using Microsoft.Extensions.Configuration;
 using Nest;
 
-namespace UserPermissions.IntegrationTests.Handlers
+namespace UserPermissions.IntegrationTests.Commands.ModifyPermission
 {
     public class ModifyPermissionCommandHandlerIntegrationTests : IClassFixture<IntegrationTestFixture>
     {

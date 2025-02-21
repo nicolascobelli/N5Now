@@ -15,7 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Nest;
 using UserPermissions.IntegrationTests;
 
-namespace UserPermissions.IntegrationTests.Handlers
+namespace UserPermissions.IntegrationTests.Commands.RequestPermission
 {
     public class RequestPermissionCommandHandlerIntegrationTests : IClassFixture<IntegrationTestFixture>
     {

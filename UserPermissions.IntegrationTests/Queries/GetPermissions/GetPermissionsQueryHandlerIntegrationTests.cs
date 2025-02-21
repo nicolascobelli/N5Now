@@ -14,7 +14,7 @@ using UserPermissions.Infrastructure.Repositories;
 using UserPermissions.Application.Services;
 using Xunit;
 
-namespace UserPermissions.IntegrationTests.Handlers
+namespace UserPermissions.IntegrationTests.Queries.GetPermissions
 {
     public class GetPermissionsQueryHandlerIntegrationTests : IClassFixture<IntegrationTestFixture>
     {
