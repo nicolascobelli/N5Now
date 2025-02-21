@@ -13,9 +13,7 @@ using UserPermissions.Domain.Entities;
 using UserPermissions.Infrastructure.Data;
 using UserPermissions.Infrastructure.Repositories;
 using Xunit;
-using Confluent.Kafka;
-using Microsoft.Extensions.Configuration;
-using Nest;
+using UserPermissions.Application.Services;
 
 namespace UserPermissions.IntegrationTests.Handlers
 {
@@ -23,8 +21,7 @@ namespace UserPermissions.IntegrationTests.Handlers
     {
         private readonly ApplicationDbContext _context;
         private readonly GetPermissionsQueryHandler _handler;
-        private readonly Mock<IProducer<string, string>> _producerMock;
-        private readonly Mock<IConfiguration> _configurationMock;
+        private readonly Mock<IMessageService> _messageServiceMock;
 
         public GetPermissionsQueryHandlerIntegrationTests()
         {
@@ -39,10 +36,9 @@ namespace UserPermissions.IntegrationTests.Handlers
             _context.Database.EnsureCreated();
 
             var permissionRepository = new PermissionsReadRepository(_context);
-            _producerMock = new Mock<IProducer<string, string>>();
-            _configurationMock = new Mock<IConfiguration>();
+            _messageServiceMock = new Mock<IMessageService>();
 
-            _handler = new GetPermissionsQueryHandler(permissionRepository, _producerMock.Object, _configurationMock.Object);
+            _handler = new GetPermissionsQueryHandler(permissionRepository, _messageServiceMock.Object);
         }
 
         [Fact]
@@ -82,6 +78,9 @@ namespace UserPermissions.IntegrationTests.Handlers
 
             Assert.Single(result);
             Assert.Equal(expected.Id, result.First().Id);
+
+            // Verify message service
+            _messageServiceMock.Verify(ms => ms.PublishAsync("Get", It.IsAny<CancellationToken>()), Times.Once);
         }
 
         public void Dispose()

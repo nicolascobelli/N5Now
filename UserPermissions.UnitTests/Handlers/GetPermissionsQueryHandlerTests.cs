@@ -9,6 +9,7 @@ using UserPermissions.Application.DTOs;
 using Xunit;
 using Confluent.Kafka;
 using Microsoft.Extensions.Configuration;
+using UserPermissions.Application.Services;
 
 namespace UserPermissions.UnitTests.Handlers
 {
@@ -16,16 +17,16 @@ namespace UserPermissions.UnitTests.Handlers
     {
         private readonly Mock<IPermissionsReadRepository> _permissionRepositoryMock;
         private readonly GetPermissionsQueryHandler _handler;
-        private readonly Mock<IProducer<string, string>> _producerMock;
-        private readonly Mock<IConfiguration> _configurationMock;
+        private readonly Mock<IMessageService> _messageServiceMock;
 
         public GetPermissionsQueryHandlerTests()
         {
             _permissionRepositoryMock = new Mock<IPermissionsReadRepository>();
-            _producerMock = new Mock<IProducer<string, string>>();
-            _configurationMock = new Mock<IConfiguration>();
+            _messageServiceMock = new Mock<IMessageService>();
 
-            _handler = new GetPermissionsQueryHandler(_permissionRepositoryMock.Object, _producerMock.Object, _configurationMock.Object);
+            _handler = new GetPermissionsQueryHandler(
+                _permissionRepositoryMock.Object,
+                _messageServiceMock.Object);
         }
 
         [Fact]
@@ -47,6 +48,30 @@ namespace UserPermissions.UnitTests.Handlers
 
             // Assert
             Assert.Equal(permissions, result);
+        }
+
+        [Fact]
+        public async Task Handle_ReturnsPermissions()
+        {
+            // Arrange
+            var employeeId = 1;
+            var permissions = new List<PermissionDto>
+            {
+                new PermissionDto { Id = 1, Description = "Test Permission", Type = "Test Type", StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(1) }
+            };
+
+            _permissionRepositoryMock.Setup(repo => repo.GetPermissionsByEmployeeIdAsync(employeeId, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(permissions);
+
+            var query = new GetPermissionsQuery { EmployeeId = employeeId };
+
+            // Act
+            var result = await _handler.Handle(query, CancellationToken.None);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Single(result);
+            _messageServiceMock.Verify(ms => ms.PublishAsync("Get", It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }

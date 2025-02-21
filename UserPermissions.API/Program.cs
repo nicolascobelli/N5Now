@@ -4,6 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using MediatR;
 using Serilog;
 using UserPermissions.Application.Commands.RequestPermission;
+using UserPermissions.Application.Services;
+using UserPermissions.Infrastructure.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using UserPermissions.Infrastructure.Data;
@@ -71,6 +73,10 @@ builder.Services.AddSingleton<IProducer<string, string>>(sp =>
     };
     return new ProducerBuilder<string, string>(config).Build();
 });
+
+// Register MessageService
+builder.Services.AddSingleton<IMessageService, MessageService>();
+
 var app = builder.Build();
 
 // Apply database migrations

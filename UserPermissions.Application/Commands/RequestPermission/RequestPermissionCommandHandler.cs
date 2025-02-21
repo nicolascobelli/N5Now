@@ -2,9 +2,8 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 using UserPermissions.Application.Repositories;
+using UserPermissions.Application.Services;
 using UserPermissions.Domain.Entities;
-using Confluent.Kafka;
-using Microsoft.Extensions.Configuration;
 using Nest;
 
 namespace UserPermissions.Application.Commands.RequestPermission
@@ -12,20 +11,17 @@ namespace UserPermissions.Application.Commands.RequestPermission
     public class RequestPermissionCommandHandler : IRequestHandler<RequestPermissionCommand, int?>
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IProducer<string, string> _producer;
+        private readonly IMessageService _messageService;
         private readonly IElasticClient _elasticClient;
-        private readonly IConfiguration _configuration;
 
         public RequestPermissionCommandHandler(
             IUnitOfWork unitOfWork,
-            IProducer<string, string> producer,
-            IElasticClient elasticClient,
-            IConfiguration configuration)
+            IMessageService messageService,
+            IElasticClient elasticClient)
         {
             _unitOfWork = unitOfWork;
-            _producer = producer;
+            _messageService = messageService;
             _elasticClient = elasticClient;
-            _configuration = configuration;
         }
 
         public async Task<int?> Handle(RequestPermissionCommand request, CancellationToken cancellationToken)
@@ -46,10 +42,8 @@ namespace UserPermissions.Application.Commands.RequestPermission
             await _unitOfWork.PermissionRepository.AddPermissionAsync(permission, cancellationToken);
             await _unitOfWork.CompleteAsync(cancellationToken);
 
-            // Produce Kafka message
-            var topic = _configuration["Kafka:TopicName"];
-            var message = new Message<string, string> { Key = Guid.NewGuid().ToString(), Value = "Permission requested" };
-            await _producer.ProduceAsync(topic, message, cancellationToken);
+            // Publish Kafka message
+            await _messageService.PublishAsync("Request", cancellationToken);
 
             // Index document in Elasticsearch
             await _elasticClient.IndexDocumentAsync(permission, cancellationToken);

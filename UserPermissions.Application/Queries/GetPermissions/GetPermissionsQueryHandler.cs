@@ -1,41 +1,35 @@
 using MediatR;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using UserPermissions.Application.DTOs;
 using UserPermissions.Application.Repositories;
-using Confluent.Kafka;
-using Microsoft.Extensions.Configuration;
+using UserPermissions.Application.Services;
 
 namespace UserPermissions.Application.Queries.GetPermissions
 {
     public class GetPermissionsQueryHandler : IRequestHandler<GetPermissionsQuery, List<PermissionDto>>
     {
-        private readonly IPermissionsReadRepository _permissionsReadRepository;
-        private readonly IProducer<string, string> _producer;
-        private readonly string _kafkaTopic = string.Empty;
+        private readonly IPermissionsReadRepository _permissionRepository;
+        private readonly IMessageService _messageService;
 
-        public GetPermissionsQueryHandler(IPermissionsReadRepository permissionsReadRepository, IProducer<string, string> producer, IConfiguration configuration)
+        public GetPermissionsQueryHandler(IPermissionsReadRepository permissionRepository, IMessageService messageService)
         {
-            _permissionsReadRepository = permissionsReadRepository;
-            _producer = producer;
-            _kafkaTopic = configuration["Kafka:TopicName"]!;
+            _permissionRepository = permissionRepository;
+            _messageService = messageService;
         }
 
         public async Task<List<PermissionDto>> Handle(GetPermissionsQuery request, CancellationToken cancellationToken)
         {
-            var result = await _permissionsReadRepository.GetPermissionsByEmployeeIdAsync(request.EmployeeId, cancellationToken);
+            var permissions = await _permissionRepository.GetPermissionsByEmployeeIdAsync(request.EmployeeId, cancellationToken);
 
-            var message = new Message<string, string>
-            {
-                Key = Guid.NewGuid().ToString(),
-                Value = "GetPermissions"
-            };
-            await _producer.ProduceAsync(_kafkaTopic, message);
+            // Publish Kafka message
+            await _messageService.PublishAsync("Get", cancellationToken);
 
-            //en este no entiendo que deberia persistir a elastic
+            //i dont understand what to send in elastic here.
 
-            return result;
+            return permissions;
         }
     }
 }

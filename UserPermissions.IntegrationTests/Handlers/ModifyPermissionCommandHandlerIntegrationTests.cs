@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 using Moq;
 using UserPermissions.Application.Commands.ModifyPermission;
 using UserPermissions.Application.Repositories;
+using UserPermissions.Application.Services;
 using UserPermissions.Domain.Entities;
 using UserPermissions.Infrastructure.Data;
 using UserPermissions.Infrastructure.Repositories;
 using Xunit;
-using Confluent.Kafka;
 using Microsoft.Extensions.Configuration;
 using Nest;
 
@@ -20,9 +20,8 @@ namespace UserPermissions.IntegrationTests.Handlers
     {
         private readonly ApplicationDbContext _context;
         private readonly ModifyPermissionCommandHandler _handler;
-        private readonly Mock<IProducer<string, string>> _producerMock;
+        private readonly Mock<IMessageService> _messageServiceMock;
         private readonly Mock<IElasticClient> _elasticClientMock;
-        private readonly Mock<IConfiguration> _configurationMock;
         private readonly UnitOfWork _unitOfWork;
 
         public ModifyPermissionCommandHandlerIntegrationTests()
@@ -38,17 +37,13 @@ namespace UserPermissions.IntegrationTests.Handlers
             _context.Database.EnsureCreated();
 
             _unitOfWork = new UnitOfWork(_context);
-            _producerMock = new Mock<IProducer<string, string>>();
+            _messageServiceMock = new Mock<IMessageService>();
             _elasticClientMock = new Mock<IElasticClient>();
-            _configurationMock = new Mock<IConfiguration>();
-
-            _configurationMock.Setup(c => c["Kafka:TopicName"]).Returns("test-topic");
 
             _handler = new ModifyPermissionCommandHandler(
                 _unitOfWork,
-                _producerMock.Object,
-                _elasticClientMock.Object,
-                _configurationMock.Object);
+                _messageServiceMock.Object,
+                _elasticClientMock.Object);
         }
 
         [Fact]
@@ -87,7 +82,7 @@ namespace UserPermissions.IntegrationTests.Handlers
             Assert.Equal(command.EndDate, updatedPermission.EndDate);
 
             // Verify Kafka message
-            _producerMock.Verify(producer => producer.ProduceAsync(It.IsAny<string>(), It.IsAny<Message<string, string>>(), It.IsAny<CancellationToken>()), Times.Once);
+            _messageServiceMock.Verify(ms => ms.PublishAsync("Modify", It.IsAny<CancellationToken>()), Times.Once);
 
             // Verify Elasticsearch indexing
             _elasticClientMock.Verify(ec => ec.IndexDocumentAsync(It.Is<Permission>(p => p.Id == permission.Id), It.IsAny<CancellationToken>()), Times.Once);
