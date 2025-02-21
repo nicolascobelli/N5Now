@@ -9,6 +9,8 @@ using UserPermissions.Infrastructure.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using UserPermissions.Infrastructure.Data;
+using UserPermissions.Application.Repositories;
+using UserPermissions.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Nest;
@@ -76,6 +78,15 @@ builder.Services.AddSingleton<IProducer<string, string>>(sp =>
 
 // Register MessageService
 builder.Services.AddSingleton<IMessageService, MessageService>();
+
+// Register Repositories
+builder.Services.AddScoped<IEmployeeReadRepository, EmployeeReadRepository>();
+builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
+builder.Services.AddScoped<IPermissionTypeReadRepository, PermissionTypeReadRepository>();
+builder.Services.AddScoped<IPermissionsReadRepository, PermissionsReadRepository>();
+
+// Register UnitOfWork
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 var app = builder.Build();
 
